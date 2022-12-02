@@ -9,6 +9,13 @@
 
   <ItemGroup>
     <None Update="input.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="sample.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.45.0" />
   </ItemGroup>
 
 </Project>
