@@ -18,30 +18,27 @@ var data =
 	(from line in File.ReadAllLines("input.txt")
 	 select line).ToArray();
 
-
+long Score(long you, long me)
+{
+	var wld = 2 - ((you - me + 4) % 3);
+	return me + 1 + wld * 3;
+}
 
 long GetPart1(string[] data)
 {
-	var temp = data
-		.Select(x => new {l = x[0] - 'A', r = x[2] - 'X'})
-		.Select(x => 1 + x.r + ((x.l + 1) % 3 == x.r ? 6 : x.l == x.r ? 3 : 0))
+	var result = data
+		.Select(x => new {l = x[0] - 'A', r = (x[2] - 'X')})
+		.Select(x => Score(x.l, x.r))
 		.Sum();
 	
-	return temp;
+	return result;
 }
 
 long GetPart2(string[] data)
 {
-	var temp = data
-		.Select(x => new {l = x[0] - 'A', r = (x[2] switch
-		{
-			'X' => x[0] + 2,
-			'Y' => x[0],
-			'Z' => x[0] + 1
-		} - 'A') % 3});
-
-	var result = temp 
-		.Select(x => 1 + x.r + ((x.l + 1) % 3 == x.r ? 6 : x.l == x.r ? 3 : 0))
+	var result = data
+		.Select(x => new {l = x[0] - 'A', r = (x[0] + x[2] - 'X') % 3})
+		.Select(x => Score(x.l, x.r))
 		.Sum();
 
 	return result;
