@@ -1,0 +1,13 @@
+#!/bin/bash
+
+dayname="$1"
+
+if [ -z "$dayname" ]
+then
+    echo "Please specify day name."
+    exit 0
+fi
+
+cp -r _template/project $dayname
+mv $dayname/template.csproj $dayname/$dayname.csproj
+

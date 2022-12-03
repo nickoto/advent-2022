@@ -11,8 +11,8 @@ var testData =
 	(from line in File.ReadAllLines("sample.txt")
 		select line).ToArray();
 
-var part1Expect = 0L;
-var part2Expect = 0L;
+var part1Expect = 15L;
+var part2Expect = 12L;
 
 var data =
 	(from line in File.ReadAllLines("input.txt")
@@ -22,12 +22,29 @@ var data =
 
 long GetPart1(string[] data)
 {
-	return 0L;
+	var temp = data
+		.Select(x => new {l = x[0] - 'A', r = x[2] - 'X'})
+		.Select(x => 1 + x.r + ((x.l + 1) % 3 == x.r ? 6 : x.l == x.r ? 3 : 0))
+		.Sum();
+	
+	return temp;
 }
 
 long GetPart2(string[] data)
 {
-	return 0L;
+	var temp = data
+		.Select(x => new {l = x[0] - 'A', r = (x[2] switch
+		{
+			'X' => x[0] + 2,
+			'Y' => x[0],
+			'Z' => x[0] + 1
+		} - 'A') % 3});
+
+	var result = temp 
+		.Select(x => 1 + x.r + ((x.l + 1) % 3 == x.r ? 6 : x.l == x.r ? 3 : 0))
+		.Sum();
+
+	return result;
 }
 
 AnsiConsole.MarkupLineInterpolated($"[[[aqua]{stopwatch.ElapsedMilliseconds} ms[/]]] Pre-compute\n");
@@ -43,7 +60,6 @@ if (part1TestResult != part1Expect)
 }
 
 AnsiConsole.MarkupLineInterpolated($"[[[green]Passed[/]]] Result: [aqua]{part1TestResult}[/]\n");
-
 
 stopwatch = Stopwatch.StartNew();
 var part1Result = GetPart1(data);

@@ -11,23 +11,47 @@ var testData =
 	(from line in File.ReadAllLines("sample.txt")
 		select line).ToArray();
 
-var part1Expect = 0L;
-var part2Expect = 0L;
+var part1Expect = 157L;
+var part2Expect = 70L;
 
 var data =
 	(from line in File.ReadAllLines("input.txt")
 	 select line).ToArray();
 
 
-
 long GetPart1(string[] data)
 {
-	return 0L;
+	var priority = data
+		.Select(x => x.Take(x.Length / 2).Intersect(x.TakeLast(x.Length / 2)).ToList())
+		.SelectMany(x => x)
+		.Select(x => x switch
+		{
+			(>= 'a') and (<= 'z') => x - 'a' + 1,
+			_ => x - 'A' + 27
+		});
+	
+	return priority.Sum();
 }
 
 long GetPart2(string[] data)
 {
-	return 0L;
+	IEnumerable<char> GetPriority()
+	{
+		var pos = 0;
+		while (pos < data.Length)
+		{
+			yield return data[pos].Intersect(data[pos + 1]).Intersect(data[pos + 2]).First();
+			pos += 3;
+		}
+	}
+	
+	var total = GetPriority().Select(x => x switch
+	{
+		(>= 'a') and (<= 'z') => x - 'a' + 1,
+		_ => x - 'A' + 27
+	});
+	
+	return total.Sum();
 }
 
 AnsiConsole.MarkupLineInterpolated($"[[[aqua]{stopwatch.ElapsedMilliseconds} ms[/]]] Pre-compute\n");

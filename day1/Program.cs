@@ -11,23 +11,59 @@ var testData =
 	(from line in File.ReadAllLines("sample.txt")
 		select line).ToArray();
 
-var part1Expect = 0L;
-var part2Expect = 0L;
+var part1Expect = 24000L;
+var part2Expect = 45000L;
 
 var data =
 	(from line in File.ReadAllLines("input.txt")
 	 select line).ToArray();
 
 
-
 long GetPart1(string[] data)
 {
-	return 0L;
+	var max = 0L;
+	var total = 0L;
+	
+	foreach(var line in data)
+	{
+		if (string.IsNullOrWhiteSpace(line))
+		{ 
+			total = 0;
+			continue;
+		}
+
+		total += long.Parse(line);
+		if (total > max)
+		{
+			max = total;
+		}
+	}
+
+	return max;
 }
 
 long GetPart2(string[] data)
 {
-	return 0L;
+	var total = 0L;
+	var totals = new List<long>();
+	
+	foreach(var line in data)
+	{
+		if (string.IsNullOrWhiteSpace(line))
+		{ 
+			totals.Add(total);
+			total = 0;
+			continue;
+		}
+
+		total += long.Parse(line);
+	}
+	
+	totals.Add(total);
+
+	totals.Sort();
+
+	return totals.TakeLast(3).Sum();
 }
 
 AnsiConsole.MarkupLineInterpolated($"[[[aqua]{stopwatch.ElapsedMilliseconds} ms[/]]] Pre-compute\n");
