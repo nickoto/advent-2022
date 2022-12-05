@@ -61,4 +61,3 @@ if (part2TestResult != part2Expect)
 }
 
 AnsiConsole.MarkupLineInterpolated($"[[[green]Passed[/]]] Result: [aqua]{part2TestResult}[/]\n");
-
