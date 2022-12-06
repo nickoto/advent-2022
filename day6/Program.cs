@@ -3,34 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using Spectre.Console;
 
 var part1Expect = 7L;
 var part2Expect = 19L;
 
-int CountBits(uint bits)
-{
-	int count = 0;
- 
-	while (bits != 0)
-	{
-		bits &= bits - 1;
-		count++;
-	}
- 
-	return count;
-}
-
 long GetStart(string data, int length)
 {
-	var i = 0;
+	var i = -1;
 	var positions = data.Select(x => 1u << (x - 'a')).ToArray();
 	do
 	{
-		var result = CountBits(positions.Skip(i).Take(length).Aggregate(0u, (total, next) => total | next));
-		i++;
+		var bits = positions.Skip(++i).Take(length).Aggregate(0u, (total, next) => total | next);
+		var result = BitOperations.PopCount(bits);
 
-		if (result == length) return i + length - 1;
+		if (result == length) 
+			return i + length;
 	} while(true);
 }
 
