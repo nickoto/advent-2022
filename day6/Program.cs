@@ -5,17 +5,51 @@ using System.IO;
 using System.Linq;
 using Spectre.Console;
 
-var part1Expect = 0L;
-var part2Expect = 0L;
+var part1Expect = 7L;
+var part2Expect = 19L;
+
+int CountBits(uint bits)
+{
+	int count = 0;
+ 
+	while (bits != 0)
+	{
+		bits &= bits - 1;
+		count++;
+	}
+ 
+	return count;
+}
+
+long GetStart(string data, int length)
+{
+	var i = 0;
+	var positions = data.Select(x => 1u << (x - 'a')).ToArray();
+	do
+	{
+		var result = CountBits(positions.Skip(i).Take(length).Aggregate(0u, (total, next) => total | next));
+		i++;
+
+		if (result == length) return i + length - 1;
+	} while(true);
+}
 
 long GetPart1(string[] data)
 {
-	return 0L;
+	var starts = data.Select(x => GetStart(x, 4)).ToArray();
+	
+	Console.WriteLine(string.Join(", ", starts));
+	
+	return starts.First();
 }
 
 long GetPart2(string[] data)
 {
-	return 0L;
+	var starts = data.Select(x => GetStart(x, 14)).ToArray();
+	
+	Console.WriteLine(string.Join(", ", starts));
+
+	return starts.First();
 }
 
 
@@ -61,3 +95,7 @@ if (part2TestResult != part2Expect)
 }
 
 AnsiConsole.MarkupLineInterpolated($"[[[green]Passed[/]]] Result: [aqua]{part2TestResult}[/]\n");
+
+stopwatch = Stopwatch.StartNew();
+var part2Result = GetPart2(inputData);
+AnsiConsole.MarkupLineInterpolated($"[[[aqua]{stopwatch.ElapsedMilliseconds} ms[/]]] Part 2: [aqua]{part2Result}[/]\n");

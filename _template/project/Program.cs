@@ -62,3 +62,7 @@ if (part2TestResult != part2Expect)
 
 AnsiConsole.MarkupLineInterpolated($"[[[green]Passed[/]]] Result: [aqua]{part2TestResult}[/]\n");
 
+stopwatch = Stopwatch.StartNew();
+var part2Result = GetPart2(inputData);
+AnsiConsole.MarkupLineInterpolated($"[[[aqua]{stopwatch.ElapsedMilliseconds} ms[/]]] Part 2: [aqua]{part2Result}[/]\n");
+
