@@ -9,7 +9,7 @@ using Spectre.Console;
 var part1Expect = 7L;
 var part2Expect = 19L;
 
-long GetStart(string data, int length)
+long GetStartSlow(string data, int length)
 {
 	var i = -1;
 	var positions = data.Select(x => 1u << (x - 'a')).ToArray();
@@ -23,9 +23,47 @@ long GetStart(string data, int length)
 	} while(true);
 }
 
+long FindDistinctSpanEnd(string data, int length)
+{
+	var hits = new bool[256];
+	var startPos = 0;
+	var endPos = 0;
+
+	// run until the sliding window size is `length` chars.
+	while (endPos - startPos < length)
+	{
+		var endChar = data[endPos];
+		if (hits[endChar])
+		{
+			while (true)
+			{
+				var startChar = data[startPos];
+				startPos++;
+				if (startChar != endChar)
+				{
+					hits[startChar] = false;
+				}
+				else
+				{
+					endPos++;
+					break;
+				}
+			}
+		}
+		else
+		{
+			hits[endChar] = true;
+			endPos++;
+		}
+	}
+
+	return endPos;
+}
+
+
 long GetPart1(string[] data)
 {
-	var starts = data.Select(x => GetStart(x, 4)).ToArray();
+	var starts = data.Select(x => FindDistinctSpanEnd(x, 4)).ToArray();
 	
 	Console.WriteLine(string.Join(", ", starts));
 	
@@ -34,7 +72,7 @@ long GetPart1(string[] data)
 
 long GetPart2(string[] data)
 {
-	var starts = data.Select(x => GetStart(x, 14)).ToArray();
+	var starts = data.Select(x => FindDistinctSpanEnd(x, 14)).ToArray();
 	
 	Console.WriteLine(string.Join(", ", starts));
 
