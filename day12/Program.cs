@@ -153,7 +153,8 @@ long GetPart2(string[] data)
 	var end = nodes[Offset(info.End.X, info.End.Y)];
 	return end.Value;
 	
-	int Offset(int x, int y) => x + info.Width * y;}
+	int Offset(int x, int y) => x + info.Width * y;
+}
 
 
 // -----
