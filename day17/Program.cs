@@ -112,7 +112,7 @@ long GetPart1(string[] data)
 
 long GetPart2(string[] data)
 {
-	var bigNum = 1_000_000;
+	var bigNum = 200_000;
 	
 	var pieces = new[] {new byte[] {0xf}, new byte[] {0x2, 0x7, 0x2}, new byte[] {0x7, 0x4, 0x4}, new byte[] {0x1, 0x1, 0x1, 0x1}, new byte[] {0x3, 0x3}};
 	var pieceWidth = new[] { 4, 3, 3, 1, 2 };
@@ -177,7 +177,7 @@ long GetPart2(string[] data)
 	}
 	
 	var stop = false;
-	var start = jetPattern.Length;
+	var start = 0;
 	var span = 0;
 
 	while(!stop)
@@ -217,18 +217,17 @@ long GetPart2(string[] data)
 	var need = 1_000_000_000_000;
 		need -= start;
 			
-	var repeatValues = need / span;
+	var repeatCount = need / span;
 	var spanHeight = heights[start + span] - heights[start];
-	var heightRepeat = repeatValues * spanHeight;
+	var heightRepeat = repeatCount * spanHeight;
 	var remainder = need % span;
 
 	var totalHeight = heightRepeat + heights[start] + heights[start + (int)remainder] - heights[start];
 
-	Console.WriteLine($"Started looking for start at {jetPattern.Length}");
 	Console.WriteLine($"Repeating spans start at: {start}");
 	Console.WriteLine($"Span: {span}");
 	Console.WriteLine($"Height of span {spanHeight}");
-	Console.WriteLine($"Height of repeats {heightRepeat}");
+	Console.WriteLine($"Height of repeats {heightRepeat} ({repeatCount} repeats)");
 	Console.WriteLine($"Total height {totalHeight}");
 	
 	return totalHeight - 1; //Remove the floor!
