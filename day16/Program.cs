@@ -141,17 +141,27 @@ long GetPart2(string[] data)
 	Stack<(int, string)> Visits = new();
 
 	var maxValve = valves.Count(x => x.Rate > 0);
-	var cache = new Dictionary<string, long>();
+	var cache = new Dictionary<Int64, long>();
 	var hits = 0;
 	var misses = 0;
-
-	var result = Maximize(valves.Take(maxValve), new[] {maxMoves, maxMoves}, new [] { valves[names[startPos]], valves[names[startPos]]}, 0);
+	var openValveBits = valves.Take(maxValve).Aggregate(0, (i, v) => i | (1 << v.Id)); 
+	
+	
+	var result = Maximize(valves.Take(maxValve).ToArray(), openValveBits, new[] {maxMoves, maxMoves}, new [] { valves[names[startPos]], valves[names[startPos]]}, 0);
+	
+	Console.WriteLine($"Cache hits: {hits} / {hits + misses} (Cache size: {cache.Count})");
+	
 	return result;
 
-	long Maximize(IEnumerable<Valve> maxValves, int[] remainingTime, Valve[] curValve, int depth)
+	long Maximize(Valve[] valves, int openValves, int[] remainingTime, Valve[] curValve, int depth)
 	{
+		var key = (Int64) openValves << 23
+		           | remainingTime[0] << 17
+		           | remainingTime[1] << 11
+		           | curValve[0].Id << 5
+		           | curValve[1].Id << 1
+		           | depth;
 		
-		var key = $"{string.Join(' ', maxValves.Select(x => x.Id))}-{string.Join(' ', remainingTime)}-{string.Join(' ', curValve.Select(x => x.Id))}-{depth}";
 		if (cache.TryGetValue(key, out var res))
 		{
 			hits++;
@@ -162,28 +172,28 @@ long GetPart2(string[] data)
 
 		long max = 0;
 		int idx = 0;
-		int player = depth % 2;
+		int player = depth;
 		var timeLeft = remainingTime.ToArray();
 		var nextValve = curValve.ToArray();
 		
-		foreach (var valve in maxValves)
+		foreach (var valve in valves)
 		{
+			if ((openValves & (1 << valve.Id)) == 0)
+			{
+				continue;
+			}
+			
 			timeLeft[player] = remainingTime[player] - distances[curValve[player].Id + valve.Id * count] - 1;
 			if (timeLeft[player] > 0)
 			{
 				var amount = valve.Rate * timeLeft[player];
 				nextValve[player] = valve;
-				var plus = Maximize(maxValves.SkipAt(idx), timeLeft, nextValve, depth+1);
+				var plus = Maximize(valves, openValves & ~(1 << valve.Id), timeLeft, nextValve, (depth + 1) % 2);
 
 				max = Math.Max(max, amount + plus);
 			}
 
 			idx++;
-			
-			if (depth == 0)
-			{
-				Console.WriteLine($"{valve.Name} - {max}  --- Hits: {hits}   Misses: {misses}");
-			}
 		}
 
 		cache[key] = max;
