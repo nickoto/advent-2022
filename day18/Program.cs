@@ -28,7 +28,10 @@ void UpdateAdjacency(int maxX, int maxY, int maxZ, int[,,] grid)
 	for (int z = 0; z < maxZ; z++)
 	{
 		var value = grid[x, y, z] & 0xffff;
-		if (value == 0) continue;
+		
+		if (value == 0)
+			continue;
+		
 		if (x > 0 && grid[x - 1, y, z] != 0) value--;
 		if (y > 0 && grid[x, y - 1, z] != 0) value--;
 		if (z > 0 && grid[x, y, z - 1] != 0) value--;
@@ -67,10 +70,8 @@ void FloodFillInner(int maxX, int maxY, int maxZ, int[,,] grid)
 
 	while (queue.TryDequeue(out var p))
 	{
-		if (grid[p.X, p.Y, p.Z] != 0)
-		{
+		if (grid[p.X, p.Y, p.Z] != 0) 
 			continue;
-		}
 		
 		grid[p.X, p.Y, p.Z] = 0x10000;
 		
@@ -87,11 +88,7 @@ void FloodFillInner(int maxX, int maxY, int maxZ, int[,,] grid)
 	for (int y = 0; y < maxY; y++)
 	for (int z = 0; z < maxZ; z++)
 	{
-		var cur = grid[x, y, z];
-		if (cur == 0x10000)
-			grid[x, y, z] = 0;
-		else if (cur == 0)
-			grid[x, y, z] = 0x10000;
+		grid[x, y, z] ^= 0x10000;
 	}
 }
 
